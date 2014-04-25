@@ -43,6 +43,18 @@ void translate_bytes(uint8_t *image, int len, uint8_t *table) {
     }
 }
 
+void print_tile(uint32_t *tile) {
+    int i, j;
+    for (i = 0; i < MAX_SPRITE_WIDTH; ++i) {
+        uint32_t tile_line = tile[i];
+        for (j = 0; j < 16; ++j) {
+            printf("%d", 0x3 & (tile_line >> (j * 2)));
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 static struct sprite *find_sprite(uint32_t *needle, struct sprite *haystack, int n_sprites) {
     int low = 0, high = n_sprites;
 
