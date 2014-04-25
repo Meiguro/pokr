@@ -19,6 +19,8 @@ import video
 
 SPRITE_HEIGHT = 16
 
+RESOURCES_PATH = 'resources'
+
 def extract_screen(raw):
     #screen_x, screen_y = 8, 41
     #screen = raw[screen_y:screen_y+432, screen_x:screen_x+480]
@@ -37,8 +39,8 @@ class SpriteIdentifier(object):
             cv2.namedWindow("Stream", cv2.WINDOW_AUTOSIZE)
             cv2.namedWindow("Game", cv2.WINDOW_AUTOSIZE)
         self.sprite_height = sprite_height
-        self.tile_map = self.make_tilemap('firered_tiles.png')
-        self.tile_text = self.make_tile_text('firered_tiles.txt')
+        self.tile_map = self.make_tilemap(os.path.join(RESOURCES_PATH, 'firered_tiles.png'))
+        self.tile_text = self.make_tile_text(os.path.join(RESOURCES_PATH, 'firered_tiles.txt'))
         self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_height)
 
 
