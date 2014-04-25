@@ -73,6 +73,24 @@ static struct sprite *find_sprite(uint32_t *needle, struct sprite *haystack, int
     return NULL;
 }
 
+static int extract_tile(uint8_t *image, uint32_t *screen_tile, int x, int y) {
+    uint8_t color_palette[MAX_PALETTE_SIZE] = {0};
+    int n_colors = 0;
+    int sp_x, sp_y;
+    for (sp_x = 0; sp_x < MAX_SPRITE_WIDTH; ++sp_x) {
+        uint32_t col = 0;
+        for (sp_y = 0; sp_y < MAX_SPRITE_HEIGHT; ++sp_y) {
+            int color = SP_PIX(x + sp_x, y + sp_y);
+            if (!color_palette[color]) {
+                color_palette[color] = ++n_colors;
+            }
+            col = (color_palette[color] - 1) | (col << 2);
+        }
+        screen_tile[sp_x] = col;
+    }
+    return n_colors;
+}
+
 int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, struct sprite_match *matched, int max_matches) {
     /*
     Identify sprites using palette pattern matching
@@ -115,20 +133,7 @@ int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, stru
 
             // extract tile
             uint32_t screen_tile[MAX_SPRITE_WIDTH];
-            uint8_t color_palette[MAX_PALETTE_SIZE] = {0};
-            int n_colors = 0;
-            int sp_x, sp_y;
-            for (sp_x = 0; sp_x < MAX_SPRITE_WIDTH; ++sp_x) {
-                uint32_t col = 0;
-                for (sp_y = 0; sp_y < MAX_SPRITE_HEIGHT; ++sp_y) {
-                    int color = SP_PIX(x + sp_x, y + sp_y);
-                    if (!color_palette[color]) {
-                        color_palette[color] = ++n_colors;
-                    }
-                    col = (color_palette[color] - 1) | (col << 2);
-                }
-                screen_tile[sp_x] = col;
-            }
+            int n_colors = extract_tile(image, screen_tile, x, y);
 
             if (n_colors != 3) {
                 continue;
