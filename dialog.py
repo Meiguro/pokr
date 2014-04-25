@@ -73,7 +73,7 @@ class BoxReader(object):
                             continue
                         if 'FIGHT BAG' in line:
                             continue
-                        if 'POKEMON RUN' in line:
+                        if 'POKéMON RUN' in line:
                             continue
                         dist, merged = dist_merge(out[-1], line)
                         if dist < self.max_dist:

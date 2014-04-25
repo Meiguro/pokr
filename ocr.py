@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 import collections
 import os
 import re
@@ -51,7 +52,7 @@ class SpriteIdentifier(object):
                 return x[0] + x
 
         out = {}
-        for line in open(fname):
+        for line in codecs.open(fname, 'r', 'utf-8'):
             m = re.match('([0-9A-F]+)([a-z]*):(.*)', line)
             if m:
                 offset = int(m.group(1), 16)

@@ -1,7 +1,7 @@
 # Numbers are hex offsets
 0:ABCDEFGHIJKLM
 10:NOPQRSTUVWXYZ
-20:abcdefghijklmE
+20:abcdefghijklmé
 30:nopqrstuvwxyz
 40:0123456789>()
 50:!?  /- ""'',.

@@ -62,7 +62,7 @@ class OCREngine(object):
             sprite = self.sprites[sprite_n]
             sprite.id = sprite_id
             text = sprite_text.get(sprite_id, '#')
-            sprite.text = text
+            sprite.text = text.encode('utf-8')
             sprite.image = pack_image(sprite_buf)
             sprite.width = max(3, len(sprite_buf) / sprite_height)
         self.sprites[len(sprites)].id = -1
