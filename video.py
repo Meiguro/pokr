@@ -36,12 +36,13 @@ class ScreenExtractor(object):
 
 
 class OCREngine(object):
-    def __init__(self, sprites, sprite_text):
+    def __init__(self, sprites, sprite_text, sprite_height=ocr.SPRITE_HEIGHT):
         def pack_image(buf):
             out = []
-            for n in range(0, len(buf) / 14):
+            height = sprite_height
+            for n in range(0, len(buf) / height):
                 column = 0
-                for color in buf[n*14:n*14+14]:
+                for color in buf[n*height:n*height+height]:
                     column = (column << 2) | color
                 out.append(column)
             return out
@@ -63,7 +64,7 @@ class OCREngine(object):
             text = sprite_text.get(sprite_id, '#')
             sprite.text = text
             sprite.image = pack_image(sprite_buf)
-            sprite.width = max(3, len(sprite_buf) / 14)
+            sprite.width = max(3, len(sprite_buf) / sprite_height)
         self.sprites[len(sprites)].id = -1
         #print repr(list(self.sprites[0].image[0:128]))
 

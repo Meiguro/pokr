@@ -16,6 +16,7 @@ import delta
 import timestamp
 import video
 
+SPRITE_HEIGHT = 16
 
 def extract_screen(raw):
     #screen_x, screen_y = 8, 41
@@ -29,14 +30,15 @@ def extract_screen(raw):
 
 class SpriteIdentifier(object):
     '''Convert image sprites into a text format'''
-    def __init__(self, debug=False):
+    def __init__(self, debug=False, sprite_height=SPRITE_HEIGHT):
         self.debug = debug
         if self.debug:
             cv2.namedWindow("Stream", cv2.WINDOW_AUTOSIZE)
             cv2.namedWindow("Game", cv2.WINDOW_AUTOSIZE)
+        self.sprite_height = sprite_height
         self.tile_map = self.make_tilemap('firered_tiles.png')
         self.tile_text = self.make_tile_text('firered_tiles.txt')
-        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text)
+        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_height)
 
 
     def make_tile_text(self, fname):
@@ -76,30 +78,31 @@ class SpriteIdentifier(object):
         sprites = []
 
         n = -1
+        height = self.sprite_height
         for y in xrange(len(tiles) / 16):
             for x in xrange(len(tiles[0]) / 8):
                 n += 1
-                sprite = self.sprite_to_quant(tiles, x, y)
+                sprite = self.sprite_to_quant(tiles, x, y, height)
                 if not sprite:
                     continue
                 if self.debug:
-                    print('({}, {}) rows: {}'.format(y, x, len(sprite)/14))
-                    for i in xrange(0, len(sprite), 14):
-                        print(''.join([ str(x) for x in sprite[i:i+14] ]))
+                    print('({}, {}) rows: {}'.format(y, x, len(sprite)/height))
+                    for i in xrange(0, len(sprite), height):
+                        print(''.join([ str(x) for x in sprite[i:i+height] ]))
                 sprites.append((n, sprite))
 
         #print "sprites:", sprites
         return sprites
 
-    def sprite_to_quant(self, image, left, top):
-        bits = (image[top*16:top*16+14, left*8:left*8+8]).flatten(order='F')
+    def sprite_to_quant(self, image, left, top, height=SPRITE_HEIGHT):
+        bits = (image[top*16:top*16+height, left*8:left*8+8]).flatten(order='F')
         palette = collections.OrderedDict.fromkeys(bits)
         if len(palette) == 1:
             return []
         palette_map = {color: n for n, color in enumerate(palette)}
         buf = [palette_map[color] for color in bits]
-        while set(buf[-14:]) == {0}: buf = buf[:-14]
-        while set(buf[:14]) == {0}: buf = buf[14:]
+        while set(buf[-height:]) == {0}: buf = buf[:-height]
+        while set(buf[:height]) == {0}: buf = buf[height:]
         #print left, top, buf
         assert(len(set(buf)) == 3)
         return buf
