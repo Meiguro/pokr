@@ -36,7 +36,7 @@ class ScreenExtractor(object):
 
 
 class OCREngine(object):
-    def __init__(self, sprites, sprite_text, sprite_height=ocr.SPRITE_HEIGHT):
+    def __init__(self, sprites, sprite_text, sprite_height):
         def pack_image(buf):
             out = []
             height = sprite_height
