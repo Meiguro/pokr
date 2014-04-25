@@ -107,9 +107,9 @@ int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, stru
             // skip if it's not solid above
             //*
             int off;
-            int prev = SP_PIX(x, y - 1);
+            int prev = SP_PIX(x, y - 0);
             for (off = 1; off < MAX_SPRITE_WIDTH; ++off) {
-                if (SP_PIX(x + off, y - 1) != prev) {
+                if (SP_PIX(x + off, y - 0) != prev) {
                     x += off;
                     goto next_x;
                 }
