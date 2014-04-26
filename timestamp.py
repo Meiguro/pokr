@@ -31,7 +31,7 @@ class TimestampRecognizer(object):
         self.timestamp_s = 0
 
     def handle(self, data):
-        x1, x2, y1, y2 = 970, 970+147, 48, 48 + 32
+        x1, x2, y1, y2 = 970, 970 + 165, 48, 48 + 32
         timestamp = data['frame'][y1:y2, x1:x2]
         col_sum = (timestamp > 150).sum(axis=0)  # Sum bright pixels in each column
         col_str = (col_sum *.5 + ord('A')).astype(numpy.int8).tostring()  #
