@@ -5,5 +5,25 @@
   "spriteWidth": 7,
   "spriteHeight": 14,
   "tilesImage": "resources/emerald_tiles.png",
-  "tilesText": "resources/emerald_tiles.txt"
+  "tilesText": "resources/emerald_tiles.txt",
+  "timestamp": {
+    "position": [970, 48],
+    "size": [147, 32],
+    "characterMap": {
+      "JJCCCCJJ":   "0",
+      "CCLLBB":     "1",
+      "FFDDDDEEFF": "2",
+      "DDCCDDDDII": "3",
+      "GGDDCCLLBB": "4",
+      "GGDDDDDDGG": "5",
+      "JJDDDDDDGG": "6",
+      "BBBBFFDDFF": "7",
+      "IIDDDDDDII": "8",
+      "FFDDDDDDJJ": "9",
+      "FFCCCCCCLL": "d",
+      "LLBBBBBBGG": "h",
+      "HHBBHHBBGG": "m",
+      "DDDDDDDDEE": "s"
+    }
+  }
 }

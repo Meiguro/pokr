@@ -5,5 +5,25 @@
   "spriteWidth": 7,
   "spriteHeight": 16,
   "tilesImage": "resources/firered_tiles.png",
-  "tilesText": "resources/firered_tiles.txt"
+  "tilesText": "resources/firered_tiles.txt",
+  "timestamp": {
+    "position": [970, 48],
+    "size": [165, 32],
+    "characterMap": {
+      "HHDCCCCCDHH":  "0",
+      "CCKKJBB":      "1",
+      "EEEEEEEDDEE":  "2",
+      "CCDCDDDDEGG":  "3",
+      "EEDDDDKKKBB":  "4",
+      "GGEDDDDDEFF":  "5",
+      "HHEDDDDDEEE":  "6",
+      "BBBBFFHEEEE":  "7",
+      "GGEDDDDDEGG":  "8",
+      "EEEDDDDDEHH":  "9",
+      "DDDCCCCCDII":  "d",
+      "IIBBBBBBBEE":  "h",
+      "FFBBFFFBBEE":  "m",
+      "DDEDDDEDD":    "s"
+    }
+  }
 }

@@ -5,5 +5,22 @@
   "spriteWidth": 8,
   "spriteHeight": 12,
   "tilesImage": "resources/mystery_dungeon_tiles.png",
-  "tilesText": "resources/mystery_dungeon_tiles.txt"
+  "tilesText": "resources/mystery_dungeon_tiles.txt",
+  "timestamp": {
+    "position": [650, 650],
+    "size": [320, 60],
+    "characterMap": {
+      "QQQQRFFFFFFFFFFFFFVQQQQ":  "0",
+      "FFFFVVVVVCCCCC":           "1",
+      "JJJJKHHHHHHHHHHHHHOJJJJ":  "2",
+      "EEEEFFFFFHHHHHHHHHVOOOO":  "3",
+      "OOOOOHHHHHHHHHHHHHOJJJJ":  "5",
+      "QQQQRHHHHHHHHHHHHHQJJJJ":  "6",
+      "CCCCCCCCCJJJJJHHHHOJJJJ":  "7",
+      "OOOOPHHHHHHHHHHHHHVOOOO":  "8",
+      "JJJJKHHHHHHHHHHHHHVQQQQ":  "9",
+      "HHHHHFFFFFFFFFFFFFSSSSS":  "d",
+      "JJJJJJJJJ":                ":"
+    }
+  }
 }

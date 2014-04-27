@@ -5,5 +5,25 @@
   "spriteWidth": 7,
   "spriteHeight": 14,
   "tilesImage": "resources/crystal_tiles.png",
-  "tilesText": "resources/crystal_tiles.txt"
+  "tilesText": "resources/crystal_tiles.txt",
+  "timestamp": {
+    "position": [231, 9],
+    "size": [147, 25],
+    "characterMap": {
+      "DGGEEDEJGDD":  "0",
+      "BBDJJJJBBB":   "1",
+      "EHHGGEGHGEE":  "2",
+      "BEEEEEGJHEE":  "3",
+      "DEEEGEJJJBB":  "4",
+      "GHHEEEEHHDD":  "5",
+      "GJJEEEEHHDD":  "6",
+      "DDDEGGEGEDD":  "7",
+      "EJJEEEEJJEE":  "8",
+      "DHHEEEEJJGG":  "9",
+      "DDDDDDDDKK":   "d",
+      "KKBBBBGE":     "h",
+      "HHBBHGBBBGG":  "m",
+      "DDEEEEEEBB":   "s"
+    }
+  }
 }

@@ -7,32 +7,17 @@ class TimestampRecognizer(object):
     Extract play time from stream.
     '''
 
-    # these represent number of set pixels in each column
-    col_to_char = {
-    'HHDCCCCCDHH':   '0',
-    'CCKKJBB':       '1',
-    'EEEEEEEDDEE':   '2',
-    'CCDCDDDDEGG':   '3',
-    'EEDDDDKKKBB':   '4',
-    'GGEDDDDDEFF':   '5',
-    'HHEDDDDDEEE':   '6',
-    'BBBBFFHEEEE':   '7',
-    'GGEDDDDDEGG':   '8',
-    'EEEDDDDDEHH':   '9',
-    'DDDCCCCCDII':   'd',
-    'IIBBBBBBBEE':   'h',
-    'FFBBFFFBBEE':   'm',
-    'DDEDDDEDD':     's'
-    }
-
-    def __init__(self, debug=False):
+    def __init__(self, settings, debug=False):
+        self.timestamp_settings = settings['timestamp']
+        self.col_to_char = self.timestamp_settings['characterMap']
         self.debug = debug
         self.timestamp = '0d0h0m0s'
         self.timestamp_s = 0
 
     def handle(self, data):
-        x1, x2, y1, y2 = 970, 970 + 165, 48, 48 + 32
-        timestamp = data['frame'][y1:y2, x1:x2]
+        [x, y] = self.timestamp_settings['position']
+        [w, h] = self.timestamp_settings['size']
+        timestamp = data['frame'][y:y+h, x:x+w]
         col_sum = (timestamp > 150).sum(axis=0)  # Sum bright pixels in each column
         col_str = (col_sum *.5 + ord('A')).astype(numpy.int8).tostring()  #
         strings = re.split(r'A*', col_str)  # Segment by black columns
@@ -43,7 +28,7 @@ class TimestampRecognizer(object):
             cv2.waitKey(0)
         try:
             result = self.convert(strings)
-            days, hours, minutes, seconds = map(int, re.split('[dhms]', result)[:-1])
+            days, hours, minutes, seconds = (int(x) for x in re.split('[dhms:]', result) if len(x) > 0)
             self.timestamp = result
             self.timestamp_s = ((days * 24 + hours) * 60 + minutes) * 60 + seconds
         except (ValueError, IndexError):
