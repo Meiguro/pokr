@@ -1,0 +1,9 @@
+{
+  "name": "Mystery Dungeon",
+  "colorMap": [[246, 1], [225, 1], [183, 1], [9, 2]],
+  "dialogLines": [120, 121, 123],
+  "spriteWidth": 8,
+  "spriteHeight": 12,
+  "tilesImage": "resources/mystery_dungeon_tiles.png",
+  "tilesText": "resources/mystery_dungeon_tiles.txt"
+}
