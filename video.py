@@ -36,10 +36,13 @@ class ScreenExtractor(object):
 
 
 class OCREngine(object):
-    def __init__(self, sprites, sprite_text, sprite_height):
+    def __init__(self, sprites, sprite_text, sprite_width, sprite_height):
+        self.sprite_width = sprite_width
+        self.sprite_height = sprite_height
+
         def pack_image(buf):
             out = []
-            height = sprite_height
+            height = self.sprite_height
             for n in range(0, len(buf) / height):
                 column = 0
                 for color in buf[n*height:n*height+height]:
@@ -90,7 +93,7 @@ class OCREngine(object):
             return self.last_out
         self.last_image = image
         results = ffi.new('struct sprite_match[]', max_matches)
-        matched = C.identify_sprites(pimage, self.sprites, self.n_sprites, results, max_matches)
+        matched = C.identify_sprites(pimage, self.sprites, self.n_sprites, self.sprite_width, self.sprite_height, results, max_matches)
         if self.last_matched is not None:
             overlap = ffi.new('int *')
             merged = ffi.new('struct sprite_match[]', max_matches)

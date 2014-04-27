@@ -17,6 +17,7 @@ import delta
 import timestamp
 import video
 
+SPRITE_WIDTH = 8
 SPRITE_HEIGHT = 16
 
 RESOURCES_PATH = 'resources'
@@ -33,15 +34,16 @@ def extract_screen(raw):
 
 class SpriteIdentifier(object):
     '''Convert image sprites into a text format'''
-    def __init__(self, debug=False, sprite_height=SPRITE_HEIGHT):
+    def __init__(self, debug=False, sprite_width=SPRITE_WIDTH, sprite_height=SPRITE_HEIGHT):
         self.debug = debug
         if self.debug:
             cv2.namedWindow("Stream", cv2.WINDOW_AUTOSIZE)
             cv2.namedWindow("Game", cv2.WINDOW_AUTOSIZE)
+        self.sprite_width = sprite_width
         self.sprite_height = sprite_height
         self.tile_map = self.make_tilemap(os.path.join(RESOURCES_PATH, 'firered_tiles.png'))
         self.tile_text = self.make_tile_text(os.path.join(RESOURCES_PATH, 'firered_tiles.txt'))
-        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_height)
+        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_width, self.sprite_height)
 
 
     def make_tile_text(self, fname):
