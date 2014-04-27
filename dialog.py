@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import itertools
 import re
 
@@ -73,7 +75,7 @@ class BoxReader(object):
                             continue
                         if 'FIGHT BAG' in line:
                             continue
-                        if 'POKEMON RUN' in line:
+                        if 'POKéMON RUN' in line:
                             continue
                         dist, merged = dist_merge(out[-1], line)
                         if dist < self.max_dist:
@@ -116,7 +118,10 @@ class BoxReader(object):
                 self.out.write(data['timestamp'] + ' ' + str(lines) + '\n')
             self.last_lines = lines
 
-        if len(lines) >= 1 and lines[0][0] == 121 and lines[0][1] < 39:
-            self.handle_dialog(data, '\n'.join(text for y, xbeg, xend, text in lines))
-        else:
-            self.handle_dialog(data, '')
+        texts = []
+        lines = [ x for x in lines if len(x[3]) > 1 ]
+
+        if len(lines) >= 1 and lines[0][0] in (120, 121) and lines[0][1] < 39:
+            texts = [ x[3] for x in lines ]
+
+        self.handle_dialog(data, '\n'.join(texts) if len(texts) >= 1 else '')

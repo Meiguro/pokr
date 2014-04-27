@@ -31,8 +31,8 @@ void pack2bpp(uint8_t *in, uint8_t *out) {
 
 #define MAX_PALETTE_SIZE 16
 
-const int kSpriteX = 7;
-const int kSpriteY = 14;
+#define MAX_SPRITE_WIDTH 7
+#define MAX_SPRITE_HEIGHT 16
 
 #define SP_PIX(x, y) image[(y)+(x)*160]
 
@@ -41,6 +41,18 @@ void translate_bytes(uint8_t *image, int len, uint8_t *table) {
     for (i = 0; i < len; ++i) {
         image[i] = table[image[i]];
     }
+}
+
+void print_tile(uint32_t *tile) {
+    int i, j;
+    for (i = 0; i < MAX_SPRITE_WIDTH; ++i) {
+        uint32_t tile_line = tile[i];
+        for (j = 0; j < 16; ++j) {
+            printf("%d", 0x3 & (tile_line >> (j * 2)));
+        }
+        printf("\n");
+    }
+    printf("\n");
 }
 
 static struct sprite *find_sprite(uint32_t *needle, struct sprite *haystack, int n_sprites) {
@@ -61,6 +73,24 @@ static struct sprite *find_sprite(uint32_t *needle, struct sprite *haystack, int
     return NULL;
 }
 
+static int extract_tile(uint8_t *image, uint32_t *screen_tile, int x, int y) {
+    uint8_t color_palette[MAX_PALETTE_SIZE] = {0};
+    int n_colors = 0;
+    int sp_x, sp_y;
+    for (sp_x = 0; sp_x < MAX_SPRITE_WIDTH; ++sp_x) {
+        uint32_t col = 0;
+        for (sp_y = 0; sp_y < MAX_SPRITE_HEIGHT; ++sp_y) {
+            int color = SP_PIX(x + sp_x, y + sp_y);
+            if (!color_palette[color]) {
+                color_palette[color] = ++n_colors;
+            }
+            col = (color_palette[color] - 1) | (col << 2);
+        }
+        screen_tile[sp_x] = col;
+    }
+    return n_colors;
+}
+
 int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, struct sprite_match *matched, int max_matches) {
     /*
     Identify sprites using palette pattern matching
@@ -70,16 +100,27 @@ int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, stru
     int considered = 0;
     int match_count = 0;
 
-    for (y = 1; y < 160 - kSpriteY; ++y) {
+    for (y = 1; y < 160 - MAX_SPRITE_HEIGHT; ++y) {
         int found = 0;
         int lastX = -1;
-        for (x = 0; x < 240 - kSpriteX; ++x) {
+        for (x = 0; x < 240 - MAX_SPRITE_WIDTH; ++x) {
             // skip if it's not solid above
-            ///*
+            //*
             int off;
-            int prev = SP_PIX(x, y - 1);
-            for (off = 1; off < kSpriteX; ++off) {
-                if (SP_PIX(x + off, y - 1) != prev) {
+            int prev = SP_PIX(x, y);
+            for (off = 1; off < MAX_SPRITE_WIDTH; ++off) {
+                if (SP_PIX(x + off, y) != prev) {
+                    x += off;
+                    goto next_x;
+                }
+            }
+            //*/
+
+            // skip if it's not solid below
+            //*
+            prev = SP_PIX(x, y + MAX_SPRITE_HEIGHT + 1);
+            for (off = 1; off < MAX_SPRITE_WIDTH; ++off) {
+                if (SP_PIX(x + off, y + MAX_SPRITE_HEIGHT + 1) != prev) {
                     x += off;
                     goto next_x;
                 }
@@ -87,9 +128,10 @@ int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, stru
             //*/
 
             // skip if it's a solid line on the left
+            //*
             int count = 0;
             prev = SP_PIX(x, y);
-            for (off = 1; off < kSpriteY; ++off) {
+            for (off = 1; off < MAX_SPRITE_HEIGHT; ++off) {
                 if (SP_PIX(x, y + off) == prev) {
                     count++;
                 } else {
@@ -102,21 +144,8 @@ int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, stru
             //*/
 
             // extract tile
-            uint32_t screen_tile[7];
-            uint8_t color_palette[MAX_PALETTE_SIZE] = {0};
-            int n_colors = 0;
-            int sp_x, sp_y;
-            for (sp_x = 0; sp_x < kSpriteX; ++sp_x) {
-                uint32_t col = 0;
-                for (sp_y = 0; sp_y < kSpriteY; ++sp_y) {
-                    int color = SP_PIX(x + sp_x, y + sp_y);
-                    if (!color_palette[color]) {
-                        color_palette[color] = ++n_colors;
-                    }
-                    col = (color_palette[color] - 1) | (col << 2);
-                }
-                screen_tile[sp_x] = col;
-            }
+            uint32_t screen_tile[MAX_SPRITE_WIDTH];
+            int n_colors = extract_tile(image, screen_tile, x, y);
 
             if (n_colors != 3) {
                 continue;

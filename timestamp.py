@@ -9,32 +9,38 @@ class TimestampRecognizer(object):
 
     # these represent number of set pixels in each column
     col_to_char = {
-    'JJCCCCJJ':     '0',
-    'CCLLBB':       '1',
-    'FFDDDDEEFF':   '2',
-    'DDCCDDDDII':   '3',
-    'GGDDCCLLBB':   '4',
-    'GGDDDDDDGG':   '5',
-    'JJDDDDDDGG':   '6',
-    'BBBBFFDDFF':   '7',
-    'IIDDDDDDII':   '8',
-    'FFDDDDDDJJ':   '9',
-    'FFCCCCCCLL':   'd',
-    'LLBBBBBBGG':   'h',
-    'HHBBHHBBGG':   'm',
-    'DDDDDDDDEE':   's'
+    'HHDCCCCCDHH':   '0',
+    'CCKKJBB':       '1',
+    'EEEEEEEDDEE':   '2',
+    'CCDCDDDDEGG':   '3',
+    'EEDDDDKKKBB':   '4',
+    'GGEDDDDDEFF':   '5',
+    'HHEDDDDDEEE':   '6',
+    'BBBBFFHEEEE':   '7',
+    'GGEDDDDDEGG':   '8',
+    'EEEDDDDDEHH':   '9',
+    'DDDCCCCCDII':   'd',
+    'IIBBBBBBBEE':   'h',
+    'FFBBFFFBBEE':   'm',
+    'DDEDDDEDD':     's'
     }
 
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug = debug
         self.timestamp = '0d0h0m0s'
         self.timestamp_s = 0
 
     def handle(self, data):
-        x1, x2, y1, y2 = 970, 970+147, 48, 48 + 32
+        x1, x2, y1, y2 = 970, 970 + 165, 48, 48 + 32
         timestamp = data['frame'][y1:y2, x1:x2]
         col_sum = (timestamp > 150).sum(axis=0)  # Sum bright pixels in each column
         col_str = (col_sum *.5 + ord('A')).astype(numpy.int8).tostring()  #
         strings = re.split(r'A*', col_str)  # Segment by black columns
+        if self.debug:
+            print(strings)
+            import cv2
+            cv2.imshow('timestamp', timestamp)
+            cv2.waitKey(0)
         try:
             result = self.convert(strings)
             days, hours, minutes, seconds = map(int, re.split('[dhms]', result)[:-1])
