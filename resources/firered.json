@@ -1,0 +1,9 @@
+{
+  "name": "FireRed",
+  "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]],
+  "dialogLines": [120, 121],
+  "spriteWidth": 7,
+  "spriteHeight": 16,
+  "tilesImage": "resources/firered_tiles.png",
+  "tilesText": "resources/firered_tiles.txt"
+}

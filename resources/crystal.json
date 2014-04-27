@@ -1,0 +1,9 @@
+{
+  "name": "Crystal",
+  "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]],
+  "dialogLines": [121],
+  "spriteWidth": 7,
+  "spriteHeight": 14,
+  "tilesImage": "resources/crystal_tiles.png",
+  "tilesText": "resources/crystal_tiles.txt"
+}

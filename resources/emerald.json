@@ -1,0 +1,9 @@
+{
+  "name": "Emerald",
+  "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]],
+  "dialogLines": [121],
+  "spriteWidth": 7,
+  "spriteHeight": 14,
+  "tilesImage": "resources/emerald_tiles.png",
+  "tilesText": "resources/emerald_tiles.txt"
+}
