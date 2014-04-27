@@ -36,9 +36,10 @@ class ScreenExtractor(object):
 
 
 class OCREngine(object):
-    def __init__(self, sprites, sprite_text, sprite_width, sprite_height):
+    def __init__(self, sprites, sprite_text, sprite_width, sprite_height, color_map):
         self.sprite_width = sprite_width
         self.sprite_height = sprite_height
+        self.color_map = color_map
 
         def pack_image(buf):
             out = []
@@ -74,7 +75,7 @@ class OCREngine(object):
         self.map = ffi.new('uint8_t[]', 256)
         #  61 is the dark red of the down arrow on text boxes
         #  Map it to 2 so the OCR engine's 3 color heuristic isn't confused.
-        for color, n in ((246, 1), (206, 2), (97, 3), (61, 3)):
+        for color, n in self.color_map:
             for off in range(-9, 9):
                 self.map[color + off] = n
 

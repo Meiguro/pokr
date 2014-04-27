@@ -2,6 +2,7 @@
 
 import codecs
 import collections
+import json
 import os
 import re
 import sys
@@ -14,6 +15,7 @@ import livestreamer
 import cv2
 
 import delta
+import mode
 import timestamp
 import video
 
@@ -21,6 +23,10 @@ SPRITE_WIDTH = 8
 SPRITE_HEIGHT = 16
 
 RESOURCES_PATH = 'resources'
+
+def load_settings(filepath=os.path.join(RESOURCES_PATH, 'firered.json')):
+    with open(filepath) as infile:
+        return json.load(infile)
 
 def extract_screen(raw):
     #screen_x, screen_y = 8, 41
@@ -34,16 +40,19 @@ def extract_screen(raw):
 
 class SpriteIdentifier(object):
     '''Convert image sprites into a text format'''
-    def __init__(self, debug=False, sprite_width=SPRITE_WIDTH, sprite_height=SPRITE_HEIGHT):
+    def __init__(self, settings=None, debug=False):
+        if settings is None:
+            settings = load_settings()
+        self.settings = settings
         self.debug = debug
         if self.debug:
             cv2.namedWindow("Stream", cv2.WINDOW_AUTOSIZE)
             cv2.namedWindow("Game", cv2.WINDOW_AUTOSIZE)
-        self.sprite_width = sprite_width
-        self.sprite_height = sprite_height
-        self.tile_map = self.make_tilemap(os.path.join(RESOURCES_PATH, 'firered_tiles.png'))
-        self.tile_text = self.make_tile_text(os.path.join(RESOURCES_PATH, 'firered_tiles.txt'))
-        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_width, self.sprite_height)
+        self.sprite_width = self.settings['spriteWidth']
+        self.sprite_height = self.settings['spriteHeight']
+        self.tile_map = self.make_tilemap(self.settings['tilesImage'])
+        self.tile_text = self.make_tile_text(self.settings['tilesText'])
+        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_width, self.sprite_height, self.settings['colorMap'])
 
 
     def make_tile_text(self, fname):
@@ -161,7 +170,10 @@ class SpriteIdentifier(object):
 
 class StreamProcessor(object):
     '''Grab frames from input and process with handlers'''
-    def __init__(self, bufsize=120, ratelimit=True, frame_skip=0, default_handlers=True, debug=False, video_loc=None):
+    def __init__(self, bufsize=120, ratelimit=True, frame_skip=0, default_handlers=True, debug=False, video_loc=None, settings=None):
+        if settings is None:
+            settings = load_settings()
+        self.settings = settings
         self.frame_queue = Queue.Queue(bufsize)
         if ratelimit is None:
             # Automatically disable ratelimit if not using the default stream
@@ -173,7 +185,7 @@ class StreamProcessor(object):
         self.video_loc = video_loc
         if default_handlers:
             self.handlers.append(video.ScreenExtractor().handle)
-            self.handlers.append(SpriteIdentifier(debug=debug).handle)
+            self.handlers.append(SpriteIdentifier(self.settings, debug=debug).handle)
             self.handlers.append(timestamp.TimestampRecognizer().handle)
 
     def add_handler(self, handler):

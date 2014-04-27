@@ -42,10 +42,12 @@ class TSD(object):
             print ts
 
 
-box_reader = pokr.BoxReader()
+settings = pokr.load_settings()
+
+box_reader = pokr.BoxReader(dialog_lines=settings['dialogLines'])
 box_reader.add_dialog_handler(DialogPusher().handle)
 
-proc = pokr.StreamProcessor()
+proc = pokr.StreamProcessor(settings=settings)
 proc.add_handler(TSD().timestamp_printer)
 #proc.add_handler(pokr.ScreenCompressor(fname='frames/frames.%y%m%d-%H%M.raw.gz').handle)
 #proc.add_handler(pokr.StringDeltaCompressor('dithered').handle)

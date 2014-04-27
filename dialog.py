@@ -43,12 +43,13 @@ def dist_merge(s1, s2):
 class BoxReader(object):
     '''Find each dialog box in the text version of the screen'''
 
-    def __init__(self, max_dist=3):
+    def __init__(self, max_dist=3, dialog_lines=[121]):
         self.last = ''
         self.lastline = ''
         self.group = []
         self.lastgroup = []
         self.dialog_handlers = []
+        self.dialog_lines = dialog_lines
         self.max_dist = max_dist
         self.continued = 0
         self.last_lines = None
@@ -121,7 +122,7 @@ class BoxReader(object):
         texts = []
         lines = [ x for x in lines if len(x[3]) > 1 ]
 
-        if len(lines) >= 1 and lines[0][0] in (120, 121) and lines[0][1] < 39:
+        if len(lines) >= 1 and lines[0][0] in self.dialog_lines and lines[0][1] < 39:
             texts = [ x[3] for x in lines ]
 
         self.handle_dialog(data, '\n'.join(texts) if len(texts) >= 1 else '')
