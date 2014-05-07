@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import codecs
 import collections
@@ -22,6 +23,10 @@ SPRITE_WIDTH = 8
 SPRITE_HEIGHT = 16
 
 RESOURCES_PATH = 'resources'
+
+block_shades = { 0: ' ', 2: '░', 1: '█' }
+def lookup_shade(x):
+    return 2 * block_shades[x]
 
 def load_settings(filepath=os.path.join(RESOURCES_PATH, 'platinum.json')):
     with open(filepath) as infile:
@@ -100,7 +105,7 @@ class SpriteIdentifier(object):
                 if self.debug:
                     print('({}, {}) rows: {}'.format(y, x, len(sprite)/height))
                     for i in xrange(0, len(sprite), height):
-                        print(''.join([ str(x) for x in sprite[i:i+height][::-1] ]))
+                        print(''.join([ lookup_shade(x) for x in sprite[i:i+height][::-1] ]))
                 sprites.append((n, sprite))
 
         #print "sprites:", sprites
