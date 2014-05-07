@@ -15,7 +15,6 @@ import livestreamer
 import cv2
 
 import delta
-import mode
 import timestamp
 import video
 
@@ -193,7 +192,6 @@ class StreamProcessor(object):
             self.handlers.append(video.ScreenExtractor(self.screen_settings).handle)
             self.handlers.append(SpriteIdentifier(self.settings, debug=debug).handle)
             self.handlers.append(timestamp.TimestampRecognizer(self.settings, debug=debug).handle)
-            self.handlers.append(mode.ModeRecognizer().handle)
 
     def add_handler(self, handler):
         self.handlers.append(handler)
