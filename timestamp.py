@@ -1,6 +1,26 @@
 import difflib
 import re
+import time
 import numpy
+
+def format_timestamp(time=None, start_time=None):
+    MINUTE = 60
+    HOUR = 60 * MINUTE
+    DAY = 24 * HOUR
+
+    time = time or time.time()
+    if start_time is not None:
+        time -= start_time
+
+    is_neg = time < 0
+    time = abs(time)
+
+    days = int(time / DAY)
+    hours = int(time % DAY / HOUR)
+    minutes = int(time % HOUR / MINUTE)
+    seconds = int(time % MINUTE)
+
+    return '{}{}d{}h{}m{}s'.format('-' if is_neg else '', days, hours, minutes, seconds)
 
 class TimestampRecognizer(object):
     '''
@@ -26,16 +46,22 @@ class TimestampRecognizer(object):
             import cv2
             cv2.imshow('timestamp', timestamp)
             cv2.waitKey(0)
+        success = True
         try:
             result = self.convert(strings)
             days, hours, minutes, seconds = (int(x) for x in re.split('[dhms:]', result) if len(x) > 0)
             self.timestamp = result
             self.timestamp_s = ((days * 24 + hours) * 60 + minutes) * 60 + seconds
         except (ValueError, IndexError):
-            pass    # invalid timestamp (ocr failed)
+            success = False # invalid timestamp (ocr failed)
         finally:
-            data['timestamp'] = self.timestamp
-            data['timestamp_s'] = self.timestamp_s
+            if success:
+                data['timestamp'] = self.timestamp
+                data['timestamp_s'] = self.timestamp_s
+            elif 'start' in self.timestamp_settings:
+                time_delta = int(time.time() - self.timestamp_settings['start'])
+                data['timestamp'] = format_timestamp(time_delta)
+                data['timestamp_s'] = time_delta
 
     def convert(self, strings):
         col_to_char = self.col_to_char
