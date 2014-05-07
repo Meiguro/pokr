@@ -151,18 +151,24 @@ class SpriteIdentifier(object):
         text = self.screen_to_text(data['screen'])
         data.update(text=text)
 
-    def test_corpus(self, directory='corpus'):
+    def test_corpus(self, directory='corpus', loops=10, has_overlay=True):
         import os
         import time
         images = []
         for fn in os.listdir(directory):
             images.append((fn, cv2.cvtColor(cv2.imread(directory + '/' + fn), cv2.COLOR_BGR2GRAY)))
         sstart = time.time()
-        for _ in range(10):
+        for _ in range(loops):
             for fn, im in images:
                 print '#' * 20 + ' ' + fn
                 start = time.time()
-                text = self.stream_to_text(im)
+                if has_overlay:
+                    text = self.stream_to_text(im)
+                else:
+                    if im.shape[0] > im.shape[1]:
+                        # likely a DS screen, use only the top half
+                        im = im[:im.shape[0]/2, :]
+                    text = self.screen_to_text(im)
                 print "%.1f"%((time.time()-start)*1000), text
         print 'TOTAL:', time.time() - sstart
 
