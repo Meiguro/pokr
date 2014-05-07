@@ -1,0 +1,37 @@
+{
+  "name": "Platinum",
+  "screen": {
+    "sourcePosition": [689, 8],
+    "sourceSize": [769, 577],
+    "size": [256, 192],
+    "dialogLines": [152, 153]
+  },
+  "sprite": {
+    "size": [7, 15],
+    "image": "resources/platinum_tiles.png",
+    "text": "resources/platinum_tiles.txt",
+    "colorMap": [[83, 1], [93, 1], [105, 1], [120, 1],
+                 [153, 2], [158, 2], [167, 2], [176, 2], [180, 2]]
+  },
+  "timestamp": {
+    "start": 1399089600,
+    "position": [970, 48],
+    "size": [165, 32],
+    "characterMap": {
+      "HHDCCCCCDHH":  "0",
+      "CCKKJBB":      "1",
+      "EEEEEEEDDEE":  "2",
+      "CCDCDDDDEGG":  "3",
+      "EEDDDDKKKBB":  "4",
+      "GGEDDDDDEFF":  "5",
+      "HHEDDDDDEEE":  "6",
+      "BBBBFFHEEEE":  "7",
+      "GGEDDDDDEGG":  "8",
+      "EEEDDDDDEHH":  "9",
+      "DDDCCCCCDII":  "d",
+      "IIBBBBBBBEE":  "h",
+      "FFBBFFFBBEE":  "m",
+      "DDEDDDEDD":    "s"
+    }
+  }
+}
