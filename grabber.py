@@ -44,7 +44,7 @@ class TSD(object):
 
 settings = pokr.load_settings()
 
-box_reader = pokr.BoxReader(dialog_lines=settings['dialogLines'])
+box_reader = pokr.BoxReader(dialog_lines=settings['screen']['dialogLines'])
 box_reader.add_dialog_handler(DialogPusher().handle)
 
 proc = pokr.StreamProcessor(settings=settings)

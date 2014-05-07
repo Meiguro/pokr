@@ -1,11 +1,17 @@
 {
   "name": "Crystal",
-  "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]],
-  "dialogLines": [121],
-  "spriteWidth": 7,
-  "spriteHeight": 14,
-  "tilesImage": "resources/crystal_tiles.png",
-  "tilesText": "resources/crystal_tiles.txt",
+  "screen": {
+    "sourcePosition": [8, 41],
+    "sourceSize": [432, 432],
+    "size": [160, 144],
+    "dialogLines": [121]
+  },
+  "sprite": {
+    "size": [7, 14],
+    "image": "resources/crystal_tiles.png",
+    "text": "resources/crystal_tiles.txt",
+    "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]]
+  },
   "timestamp": {
     "position": [231, 9],
     "size": [147, 25],

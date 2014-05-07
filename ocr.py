@@ -24,17 +24,15 @@ SPRITE_HEIGHT = 16
 
 RESOURCES_PATH = 'resources'
 
-def load_settings(filepath=os.path.join(RESOURCES_PATH, 'firered.json')):
+def load_settings(filepath=os.path.join(RESOURCES_PATH, 'platinum.json')):
     with open(filepath) as infile:
         return json.load(infile)
 
-def extract_screen(raw):
-    #screen_x, screen_y = 8, 41
-    #screen = raw[screen_y:screen_y+432, screen_x:screen_x+480]
-    #screen = cv2.resize(screen, (160, 144), interpolation=cv2.INTER_AREA)
-    screen_x, screen_y = 8, 8
-    screen = raw[screen_y:screen_y+640, screen_x:screen_x+960]
-    screen = cv2.resize(screen, (240, 160), interpolation=cv2.INTER_AREA)
+def extract_screen(raw, screen_settings):
+    [screen_x, screen_y] = screen_settings['sourcePosition']
+    [screen_w, screen_h] = screen_settings['sourceSize']
+    screen = raw[screen_y:screen_y+screen_h, screen_x:screen_x+screen_w]
+    screen = cv2.resize(screen, tuple(screen_settings['size']), interpolation=cv2.INTER_AREA)
     return screen
 
 
@@ -48,11 +46,12 @@ class SpriteIdentifier(object):
         if self.debug:
             cv2.namedWindow("Stream", cv2.WINDOW_AUTOSIZE)
             cv2.namedWindow("Game", cv2.WINDOW_AUTOSIZE)
-        self.sprite_width = self.settings['spriteWidth']
-        self.sprite_height = self.settings['spriteHeight']
-        self.tile_map = self.make_tilemap(self.settings['tilesImage'])
-        self.tile_text = self.make_tile_text(self.settings['tilesText'])
-        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_width, self.sprite_height, self.settings['colorMap'])
+        self.sprite_settings = self.settings['sprite']
+        self.screen_settings = self.settings['screen']
+        [self.sprite_width, self.sprite_height] = self.sprite_settings['size']
+        self.tile_map = self.make_tilemap(self.sprite_settings['image'])
+        self.tile_text = self.make_tile_text(self.sprite_settings['text'])
+        self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_width, self.sprite_height, self.sprite_settings['colorMap'])
 
 
     def make_tile_text(self, fname):
@@ -102,7 +101,7 @@ class SpriteIdentifier(object):
                 if self.debug:
                     print('({}, {}) rows: {}'.format(y, x, len(sprite)/height))
                     for i in xrange(0, len(sprite), height):
-                        print(''.join([ str(x) for x in sprite[i:i+height] ]))
+                        print(''.join([ str(x) for x in sprite[i:i+height][::-1] ]))
                 sprites.append((n, sprite))
 
         #print "sprites:", sprites
@@ -140,8 +139,8 @@ class SpriteIdentifier(object):
         return self.ocr_engine.identify(screen)
 
     def stream_to_text(self, frame):
-        screen = extract_screen(frame)
-        return screen, self.screen_to_text(screen)
+        screen = extract_screen(frame, self.screen_settings)
+        return self.screen_to_text(screen)
 
     def handle(self, data):
         if self.debug:
@@ -163,7 +162,7 @@ class SpriteIdentifier(object):
             for fn, im in images:
                 print '#' * 20 + ' ' + fn
                 start = time.time()
-                screen, text = self.stream_to_text(im)
+                text = self.stream_to_text(im)
                 print "%.1f"%((time.time()-start)*1000), text
         print 'TOTAL:', time.time() - sstart
 
@@ -174,6 +173,7 @@ class StreamProcessor(object):
         if settings is None:
             settings = load_settings()
         self.settings = settings
+        self.screen_settings = settings['screen']
         self.frame_queue = Queue.Queue(bufsize)
         if ratelimit is None:
             # Automatically disable ratelimit if not using the default stream
@@ -184,7 +184,7 @@ class StreamProcessor(object):
         self.handlers = []
         self.video_loc = video_loc
         if default_handlers:
-            self.handlers.append(video.ScreenExtractor().handle)
+            self.handlers.append(video.ScreenExtractor(self.screen_settings).handle)
             self.handlers.append(SpriteIdentifier(self.settings, debug=debug).handle)
             self.handlers.append(timestamp.TimestampRecognizer(self.settings, debug=debug).handle)
             self.handlers.append(mode.ModeRecognizer().handle)

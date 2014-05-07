@@ -19,13 +19,14 @@ C = ffi.dlopen(os.path.abspath(os.path.dirname(__file__)) + '/accel.so')
 
 
 class ScreenExtractor(object):
-    def __init__(self, fname=None, debug=False):
+    def __init__(self, screen_settings, fname=None, debug=False):
+        self.screen_settings = screen_settings
         self.last = None
         self.n = 0
 
     def handle(self, data):
         self.n += 1
-        data['screen'] = ocr.extract_screen(data['frame'])
+        data['screen'] = ocr.extract_screen(data['frame'], self.screen_settings)
         trunc = data['screen'] >> 6  # / 64 -> values in [0, 3]
         data['changed'] = not numpy.array_equal(trunc, self.last)
         data['frame_n'] = self.n
@@ -86,15 +87,17 @@ class OCREngine(object):
         ''' recognize text on screen, return list of lists of
         [ypos, xbegin, xend, text]
         '''
+        (screen_height, screen_width) = screen.shape
         max_matches = 128
         image = screen.flatten(order='F')
         pimage = ffi.cast('uint8_t *', image.ctypes.data)
-        C.translate_bytes(pimage, 240*160, self.map)
+        C.translate_bytes(pimage, screen_width*screen_height, self.map)
         if numpy.array_equal(image, self.last_image):
             return self.last_out
         self.last_image = image
         results = ffi.new('struct sprite_match[]', max_matches)
-        matched = C.identify_sprites(pimage, self.sprites, self.n_sprites, self.sprite_width, self.sprite_height, results, max_matches)
+        matched = C.identify_sprites(pimage, screen_width, screen_height,
+                self.sprites, self.n_sprites, self.sprite_width, self.sprite_height, results, max_matches)
         if self.last_matched is not None:
             overlap = ffi.new('int *')
             merged = ffi.new('struct sprite_match[]', max_matches)
@@ -181,9 +184,10 @@ if __name__ == '__main__':
             else:
                 return '/home/ryan/games/tpp/stream.flv'
 
+    settings = ocr.load_settings()
     proc = SavedStreamProcessor(default_handlers=False)
-    proc.add_handler(ScreenExtractor().handle)
-    proc.add_handler(timestamp.TimestampRecognizer().handle)
+    proc.add_handler(ScreenExtractor(settings['screen']).handle)
+    proc.add_handler(timestamp.TimestampRecognizer(settings).handle)
     proc.add_handler(ScreenCompressor(debug=True, fname='frames.raw.gz').handle)
     proc.run()
     while True:

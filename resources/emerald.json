@@ -1,11 +1,17 @@
 {
   "name": "Emerald",
-  "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]],
-  "dialogLines": [121],
-  "spriteWidth": 7,
-  "spriteHeight": 14,
-  "tilesImage": "resources/emerald_tiles.png",
-  "tilesText": "resources/emerald_tiles.txt",
+  "screen": {
+    "sourcePosition": [8, 8],
+    "sourceSize": [960, 640],
+    "size": [240, 160],
+    "dialogLines": [121]
+  },
+  "sprite": {
+    "size": [7, 14],
+    "image": "resources/emerald_tiles.png",
+    "text": "resources/emerald_tiles.txt",
+    "colorMap": [[246, 1], [206, 2], [97, 3], [61, 3]]
+  },
   "timestamp": {
     "position": [970, 48],
     "size": [147, 32],

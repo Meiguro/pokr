@@ -21,6 +21,6 @@ struct sprite_matches {
 
 void translate_bytes(uint8_t *image, int len, uint8_t *table);
 
-int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, int sprite_width, int sprite_height, struct sprite_match *matched, int max_matches);
+int identify_sprites(uint8_t *image, int image_width, int image_height, struct sprite *sprites, int n_sprites, int sprite_width, int sprite_height, struct sprite_match *matched, int max_matches);
 
 int merge_sprites(struct sprite_match *a, int a_count, struct sprite_match *b, int b_count, struct sprite_match *dest, int dest_count, int *overlap_out);

@@ -34,7 +34,7 @@ void pack2bpp(uint8_t *in, uint8_t *out) {
 #define MAX_SPRITE_WIDTH 8
 #define MAX_SPRITE_HEIGHT 16
 
-#define SP_PIX(x, y) image[(y)+(x)*160]
+#define SP_PIX(x, y) image[(y)+(x)*(image_height)]
 
 void translate_bytes(uint8_t *image, int len, uint8_t *table) {
     int i;
@@ -73,7 +73,7 @@ static struct sprite *find_sprite(uint32_t *needle, struct sprite *haystack, int
     return NULL;
 }
 
-static int extract_tile(uint8_t *image, uint32_t *screen_tile, int sprite_width, int sprite_height, int x, int y) {
+static int extract_tile(uint8_t *image, int image_width, int image_height, uint32_t *screen_tile, int sprite_width, int sprite_height, int x, int y) {
     uint8_t color_palette[MAX_PALETTE_SIZE] = {0};
     int n_colors = 0;
     int sp_x, sp_y;
@@ -91,7 +91,7 @@ static int extract_tile(uint8_t *image, uint32_t *screen_tile, int sprite_width,
     return n_colors;
 }
 
-int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, int sprite_width, int sprite_height, struct sprite_match *matched, int max_matches) {
+int identify_sprites(uint8_t *image, int image_width, int image_height, struct sprite *sprites, int n_sprites, int sprite_width, int sprite_height, struct sprite_match *matched, int max_matches) {
     /*
     Identify sprites using palette pattern matching
     */
@@ -100,10 +100,10 @@ int identify_sprites(uint8_t *image, struct sprite *sprites, int n_sprites, int 
     int considered = 0;
     int match_count = 0;
 
-    for (y = 1; y < 160 - sprite_height; ++y) {
+    for (y = 1; y < image_height - sprite_height; ++y) {
         int found = 0;
         int lastX = -1;
-        for (x = 0; x < 240 - sprite_width; ++x) {
+        for (x = 0; x < image_width - sprite_width; ++x) {
             // skip if it's not solid above
             //*
             int off;
