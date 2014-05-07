@@ -145,7 +145,7 @@ int identify_sprites(uint8_t *image, int image_width, int image_height, struct s
 
             // extract tile
             uint32_t screen_tile[MAX_SPRITE_WIDTH];
-            int n_colors = extract_tile(image, screen_tile, sprite_width, sprite_height, x, y);
+            int n_colors = extract_tile(image, image_width, image_height, screen_tile, sprite_width, sprite_height, x, y);
 
             if (n_colors != 3) {
                 continue;
