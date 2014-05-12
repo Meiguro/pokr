@@ -53,8 +53,8 @@ class SpriteIdentifier(object):
         self.sprite_settings = self.settings['sprite']
         self.screen_settings = self.settings['screen']
         [self.sprite_width, self.sprite_height] = self.sprite_settings['size']
-        self.tile_map = self.make_tilemap(self.sprite_settings['image'])
         self.tile_text = self.make_tile_text(self.sprite_settings['text'])
+        self.tile_map = self.make_tilemap(self.sprite_settings['image'])
         self.ocr_engine = video.OCREngine(self.tile_map, self.tile_text, self.sprite_width, self.sprite_height, self.sprite_settings['colorMap'])
 
 
@@ -103,7 +103,8 @@ class SpriteIdentifier(object):
                 if not sprite:
                     continue
                 if self.debug:
-                    print('({}, {}) rows: {}'.format(y, x, len(sprite)/height))
+                    text = self.tile_text[n] if n in self.tile_text else ''
+                    print(u'\'{}\':{} ({}, {}) rows: {}'.format(text, len(text), y, x, len(sprite)/height))
                     for i in xrange(0, len(sprite), height):
                         print(''.join([ lookup_shade(x) for x in sprite[i:i+height][::-1] ]))
                 sprites.append((n, sprite))
