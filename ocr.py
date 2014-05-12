@@ -49,7 +49,7 @@ class SpriteIdentifier(object):
         self.debug = debug
         if self.debug:
             cv2.namedWindow("Stream", cv2.WINDOW_AUTOSIZE)
-            cv2.namedWindow("Game", cv2.WINDOW_AUTOSIZE)
+            cv2.namedWindow("Screen", cv2.WINDOW_AUTOSIZE)
         self.sprite_settings = self.settings['sprite']
         self.screen_settings = self.settings['screen']
         [self.sprite_width, self.sprite_height] = self.sprite_settings['size']
