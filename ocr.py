@@ -196,7 +196,7 @@ class StreamProcessor(object):
         if default_handlers:
             self.handlers.append(video.ScreenExtractor(self.screen_settings).handle)
             self.handlers.append(SpriteIdentifier(self.settings, debug=debug).handle)
-            self.handlers.append(timestamp.TimestampRecognizer(self.settings, debug=debug).handle)
+            self.handlers.append(timestamp.TimestampRecognizer(self.settings).handle)
 
     def add_handler(self, handler):
         self.handlers.append(handler)
