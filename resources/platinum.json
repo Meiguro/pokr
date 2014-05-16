@@ -15,23 +15,23 @@
   },
   "timestamp": {
     "start": 1399089600,
-    "position": [970, 48],
-    "size": [165, 32],
+    "position": [1331, 588],
+    "size": [184, 30],
     "characterMap": {
-      "HHDCCCCCDHH":  "0",
-      "CCKKJBB":      "1",
-      "EEEEEEEDDEE":  "2",
-      "CCDCDDDDEGG":  "3",
-      "EEDDDDKKKBB":  "4",
-      "GGEDDDDDEFF":  "5",
-      "HHEDDDDDEEE":  "6",
-      "BBBBFFHEEEE":  "7",
-      "GGEDDDDDEGG":  "8",
-      "EEEDDDDDEHH":  "9",
-      "DDDCCCCCDII":  "d",
-      "IIBBBBBBBEE":  "h",
-      "FFBBFFFBBEE":  "m",
-      "DDEDDDEDD":    "s"
+      "HHJDDDDDDJHH": "0",
+      "BBBBBMMM":     "1",
+      "GGIEFEEEEIFF": "2",
+      "FFIDDEEEEMII": "3",
+      "GGIEEDDMMMBB": "4",
+      "IIJEEEEEEIFG": "5",
+      "JJMEEEEEEKFF": "6",
+      "BBEEEEEEEHEE": "7",
+      "IIMEEEEEEMII": "8",
+      "FFJEEEEEEMJJ": "9",
+      "FFIDDDDDDMMM": "d",
+      "MMMBBBBBBIHH": "h",
+      "IIIBCIICBIHH": "m",
+      "DDHEEEEEEHEE": "s"
     }
   }
 }
