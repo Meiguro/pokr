@@ -3,7 +3,7 @@ void pack2bpp(uint8_t *in, uint8_t *out);
 struct sprite {
     uint32_t image[8];
     int id;
-    char text[5];
+    char text[6];
     int width;
 };
 
