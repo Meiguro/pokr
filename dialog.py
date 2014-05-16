@@ -74,9 +74,9 @@ class BoxReader(object):
                     for line in el.splitlines():
                         if not line:
                             continue
-                        if 'FIGHT BAG' in line:
+                        if u'FIGHT BAG' in line:
                             continue
-                        if 'POKéMON RUN' in line:
+                        if u'POKéMON RUN' in line:
                             continue
                         dist, merged = dist_merge(out[-1], line)
                         if dist < self.max_dist:
@@ -123,6 +123,6 @@ class BoxReader(object):
         lines = [ x for x in lines if len(x[3]) > 1 ]
 
         if len(lines) >= 1 and lines[0][0] in self.dialog_lines and lines[0][1] < 39:
-            texts = [ x[3] for x in lines ]
+            texts = [ x[3].decode('utf-8') for x in lines ]
 
-        self.handle_dialog(data, '\n'.join(texts) if len(texts) >= 1 else '')
+        self.handle_dialog(data, u'\n'.join(texts) if len(texts) >= 1 else '')
