@@ -19,14 +19,17 @@ class FilteredPrinter(object):
         data.pop('frame')
         data.pop('screen')
         r.publish('pokemon.streams.frames', json.dumps(data))
-        print data['timestamp'], '%5d'%len(data['dithered_delta'])
+        #print data['timestamp'], '%5d'%len(data['dithered_delta'])
 
 class DialogPusher(object):
     def handle(self, text, lines, timestamp):
         r.publish('pokemon.streams.dialog', json.dumps({'time': timestamp, 'text': text, 'lines': lines}))
+        print timestamp, text
 
 
 box_reader = pokr.BoxReader()
+tracker = pokr.BattleTracker()
+box_reader.add_dialog_handler(tracker.handle_text)
 box_reader.add_dialog_handler(DialogPusher().handle)
 
 proc = pokr.StreamProcessor()

@@ -54,7 +54,7 @@ class BoxReader(object):
                 out = ' '.join(out).strip()
                 out = re.sub(r'\s+', ' ', out)
                 for handler in self.dialog_handlers:
-                    handler(out, lines, timestamp)
+                    out = handler(out, lines, timestamp) or out
                 self.lastgroup = self.group
                 self.group = []
             self.last = text
@@ -74,20 +74,25 @@ class BoxReader(object):
         lines = data['text'].splitlines()
         timestamp = data['timestamp']
         boxes = []
+
+        def get_char(y, x):
+            if y < len(lines) and x < len(lines[y]):
+                return lines[y][x]
+
         for box_y in range(18):
             for box_x in range(20):
-                if lines[box_y][box_x] == '#':
+                if get_char(box_y, box_x) == '#':
                     # might be a dialog box, trace
 
                     top_x = box_x + 1
-                    while top_x < 20 and lines[box_y][top_x] == '_':
+                    while top_x < 20 and get_char(box_y, top_x) == '_':
                         top_x += 1
-                    if top_x == 20 or lines[box_y][top_x] != '#':
+                    if top_x == 20 or get_char(box_y, top_x) != '#':
                         break
                     left_y = box_y + 1
-                    while left_y < 18 and lines[left_y][box_x] == '|' and lines[left_y][top_x] == '|':
+                    while left_y < 18 and get_char(left_y, box_x) == '|' and get_char(left_y, top_x) == '|':
                         left_y += 1
-                    if left_y == 18 or lines[left_y][box_x] != '#' or lines[left_y][top_x] != '#':
+                    if left_y == 18 or get_char(left_y, box_x) != '#' or get_char(left_y, top_x) != '#':
                         break
 
                     box = ''
@@ -129,8 +134,10 @@ class BattleState(object):
         self.trainer_battle = m_trainer is not None
         if m_trainer:
             self.opponent = m_trainer.group(1)
-        else:
+        elif m_wild:
             self.opponent = m_wild.group(1)
+        else:
+            self.opponent = 'Opponent'
         self.start_time = timestamp
         self.lines = [(timestamp, start_text)]
         self.state = self.STATE_NORMAL
@@ -162,8 +169,6 @@ class BattleState(object):
 
         if self.opponent_level == 0:
             self.opponent_level = self.read_enemy_level(lines)
-
-        text = self.annotate(text, lines)
 
         for banned in self.banned_phrases:
             if banned in text:
@@ -219,6 +224,7 @@ class BattleTracker(object):
 
     def handle_text(self, text, lines, timestamp):
         if self.battle:
+            text = self.battle.annotate(text, lines)
             if self.battle.feed(text, lines, timestamp):
                 self.battles.append(self.battle)
                 self.battle = None
@@ -226,6 +232,7 @@ class BattleTracker(object):
             if self.battle:
                 self.battles.append(self.battle)
             self.battle = BattleState(text, timestamp)
+        return text
 
     def finalize(self):
         for battle in self.battles[::-1]:
