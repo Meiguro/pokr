@@ -16,8 +16,8 @@ import video
 
 
 def extract_screen(raw):
-    screen_x, screen_y = 8, 41
-    screen = raw[screen_y:screen_y+432, screen_x:screen_x+480]
+    screen_x, screen_y = 240, 70
+    screen = raw[screen_y:screen_y+(144*3), screen_x:screen_x+(160*3)]
     screen = cv2.resize(screen, (160, 144), interpolation=cv2.INTER_AREA)
     return screen
 
